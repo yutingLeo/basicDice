@@ -21,7 +21,7 @@ protected:
     void closeEvent(QCloseEvent* event) override;
 
 private slots:
-    void slotDiceValueChanged(quint8 diceVal);
+    void slotDiceValueChanged(Dice diceVal);
     void slotThreadStarted();
     void slotThreadFinished();
     void on_actionstartThread_triggered();
@@ -36,10 +36,11 @@ signals:
     void sigPauseDice();
 
 private:
-    void displayDiceText(quint8 diceVal);
-    void displayDicePixmap(quint8 diceVal);
+    void displayDiceText(Dice dice);
+    void displayDicePixmap(Dice dice);
     Ui::MainWindow *ui;
     ThreadDice m_diceThread;
     QString m_showText;
+    QList<QPixmap> m_pixmapList;
 };
 #endif // MAINWINDOW_H

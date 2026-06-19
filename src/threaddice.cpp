@@ -1,6 +1,8 @@
 #include "threaddice.h"
 #include <QRandomGenerator>
 
+quint64 Dice::seq = 0;
+
 ThreadDice::ThreadDice(QObject *parent)
     : QThread{parent}
 {}
@@ -15,7 +17,8 @@ void ThreadDice::run() {
         }
         if (threadStop || isInterruptionRequested()) break;
         if (!dicePause) {
-            m_diceValue = QRandomGenerator::global()->bounded(1,7);
+            m_diceValue.diceValue = QRandomGenerator::global()->bounded(1,7);
+            m_diceValue.seq++;
             emit sigDiceValueChanged(m_diceValue);
         }
         msleep(500);

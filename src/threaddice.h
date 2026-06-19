@@ -4,6 +4,12 @@
 #include <QThread>
 #include <QMutex>
 
+struct Dice
+{
+    static quint64 seq;
+    quint8  diceValue;
+};
+
 class ThreadDice : public QThread
 {
     Q_OBJECT
@@ -16,12 +22,12 @@ public slots:
     void slotStartDice();
     void slotPauseDice();
 signals:
-    void sigDiceValueChanged(quint8 diceValue);
+    void sigDiceValueChanged(Dice diceValue);
 private:
     bool m_threadStop = false;
     bool m_dicePause = true;
     QMutex m_mutex;
-    quint8 m_diceValue = 0;
+    Dice m_diceValue = {0};
 };
 
 #endif // THREADDICE_H
