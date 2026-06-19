@@ -6,8 +6,15 @@ ThreadDice::ThreadDice(QObject *parent)
 {}
 
 void ThreadDice::run() {
-    while (!m_threadStop) {
-        if (!m_dicePause) {
+    while (true) {
+        bool threadStop, dicePause;
+        {
+            QMutexLocker lock(&m_mutex);
+            threadStop = m_threadStop;
+            dicePause = m_dicePause;
+        }
+        if (threadStop || isInterruptionRequested()) break;
+        if (!dicePause) {
             m_diceValue = QRandomGenerator::global()->bounded(1,7);
             emit sigDiceValueChanged(m_diceValue);
         }
@@ -16,15 +23,24 @@ void ThreadDice::run() {
     quit();
 }
 
+void ThreadDice::resetAllFlags() {
+    QMutexLocker lock(&m_mutex);
+    m_threadStop = false;
+    m_dicePause = true;
+}
+
 void ThreadDice::slotStopThread() {
+    QMutexLocker lock(&m_mutex);
     m_threadStop = true;
 }
 
 void ThreadDice::slotStartDice() {
+    QMutexLocker lock(&m_mutex);
     m_dicePause = false;
 }
 
 void ThreadDice::slotPauseDice() {
+    QMutexLocker lock(&m_mutex);
     m_dicePause = true;
 }
 

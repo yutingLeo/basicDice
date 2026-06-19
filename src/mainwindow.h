@@ -22,6 +22,8 @@ protected:
 
 private slots:
     void slotDiceValueChanged(quint8 diceVal);
+    void slotThreadStarted();
+    void slotThreadFinished();
     void on_actionstartThread_triggered();
     void on_actionstartDice_triggered();
     void on_actionClearText_triggered();

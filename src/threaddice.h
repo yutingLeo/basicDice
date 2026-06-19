@@ -2,6 +2,7 @@
 #define THREADDICE_H
 
 #include <QThread>
+#include <QMutex>
 
 class ThreadDice : public QThread
 {
@@ -9,6 +10,7 @@ class ThreadDice : public QThread
 public:
     explicit ThreadDice(QObject *parent = nullptr);
     void run() override;
+    void resetAllFlags();
 public slots:
     void slotStopThread();
     void slotStartDice();
@@ -18,6 +20,7 @@ signals:
 private:
     bool m_threadStop = false;
     bool m_dicePause = true;
+    QMutex m_mutex;
     quint8 m_diceValue = 0;
 };
 
