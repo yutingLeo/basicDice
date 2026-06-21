@@ -15,7 +15,6 @@ qt_add_executable(basicDice
     src/mainwindow.ui
     src/resource.qrc
     src/threaddice.h src/threaddice.cpp
-
 )
 
 target_link_libraries(basicDice

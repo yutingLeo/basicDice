@@ -7,6 +7,14 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    // construct dice pixmap list
+    for(int i=1; i<=6; i++) {
+        QPixmap pxm(QString(":/dice/images/d%1.jpg").arg(i));
+        if (!pxm.isNull()) {
+            m_pixmapList.append(pxm);
+        }
+    }
+
     // bind connections: this.command -> thead.slot
     connect(this, &MainWindow::sigStopThread, &m_diceThread, &ThreadDice::slotStopThread);
     connect(this, &MainWindow::sigStartDice, &m_diceThread, &ThreadDice::slotStartDice);
@@ -80,23 +88,26 @@ void MainWindow::on_actionClearText_triggered()
     ui->plainTextEdit->clear();
 }
 
-void MainWindow::slotDiceValueChanged(quint8 diceVal) {
-    if (diceVal >= 1 and diceVal <= 6) {
-        displayDiceText(diceVal);
-        displayDicePixmap(diceVal);
+void MainWindow::slotDiceValueChanged(Dice dice) {
+    if (dice.diceValue >= 1 and dice.diceValue <= 6) {
+        displayDiceText(dice);
+        displayDicePixmap(dice);
     }
 }
 
-void MainWindow::displayDiceText(quint8 diceVal) {
-    QString curText = QString("第 n 次掷骰子，点数为：%1\n").arg(diceVal);
+void MainWindow::displayDiceText(Dice dice) {
+    QString curText = QString("第 %1 次掷骰子，点数为：%2\n").arg(dice.seq).arg(dice.diceValue);
     m_showText.append(curText);
     ui->plainTextEdit->setPlainText(m_showText);
 }
 
-void MainWindow::displayDicePixmap(quint8 diceVal) {
-    QString pixFileName = QString(":/dice/images/d%1.jpg").arg(diceVal);
-    QPixmap pixmap(pixFileName);
-    ui->lblPic->setPixmap(pixmap);
+void MainWindow::displayDicePixmap(Dice dice) {
+    // QString pixFileName = QString(":/dice/images/d%1.jpg").arg(dice.diceValue);
+    // QPixmap pixmap(pixFileName);
+    int idx = dice.diceValue - 1;
+    if (idx >= 0 and idx < m_pixmapList.size()) {
+        ui->lblPic->setPixmap(m_pixmapList.at(idx));  
+    }
 }
 
 void MainWindow::slotThreadStarted() {
